@@ -1,0 +1,14 @@
+class {{model_child_class_name}} extends {{model_class_name}} {
+    {{constructors}}
+
+    @override
+    Type get _effectiveRuntimeType => {{model_class_name}};
+
+    {{model_class_name}} asModel() {
+        return {{model_class_name}}._fromAu({{#fields}}{{field_name}},{{/fields}});
+    }
+
+    {{#has_const_constructor}}const {{/has_const_constructor}}{{model_child_class_name}}._fromAu({{#fields}}super.{{field_name}},{{/fields}}) : super._fromAu();    
+
+    {{annotations}}
+}

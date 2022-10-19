@@ -1,0 +1,48 @@
+targets:
+  $default:
+    builders:
+      source_gen:combining_builder:
+        enabled: False
+      mint:mint_builder:
+        enabled: True
+      mint:mint_combining_builder:
+        enabled: True
+
+builders:
+  mint_builder:
+    import: "package:mint/builder.dart"
+    builder_factories: ["mintBuilder"]
+    build_extensions: {".dart":["mint.g.part"]}
+    auto_apply: dependents
+    build_to: cache
+    applies_builders: ["mint|mint_combining_builder"]
+    defaults:
+      options:
+        templates:
+          abstract: "package:mint/src/templates/abstract.mustache"
+          child: "package:mint/src/templates/child.mustache"
+          from_au_hint: "package:mint/src/templates/from_au_hint.mustache"
+          jar: "package:mint/src/templates/jar.mustache"
+          mixin: "package:mint/src/templates/mixin.mustache"
+          # Annotation examples:
+          from_json: "package:mint/src/templates/from_json.mustache"
+          to_json: "package:mint/src/templates/to_json.mustache"
+        mixin_annotations:
+          - annotation: 'JsonSerializable'
+            template: 'to_json'
+        child_annotations:
+          - annotation: 'JsonSerializable'
+            template: 'from_json'
+  mint_combining_builder:
+    import: "package:mint/builder.dart"
+    builder_factories: ["mintCombiningBuilder"]
+    build_extensions: {".dart": [".au.dart"]}
+    auto_apply: none
+    build_to: source
+    required_inputs: [".g.part"]
+    applies_builders: ["source_gen|part_cleanup"]
+    defaults:
+      options:
+        # Which parts will have model references replaced with Au child references (Person > AuPerson). This is only needed when there are factories being generated.  
+        mint_rewire_parts:
+          - 'json_serializable.g.part'

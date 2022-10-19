@@ -1,0 +1,1 @@
+Au is an annotation for `Mint`, the code generation framework.

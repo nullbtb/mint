@@ -1,0 +1,7 @@
+class {{model_jar_class_name}} {
+    {{#fields}}
+    {{^field_is_private}}final {{field_type}}? {{field_name}};{{/field_is_private}}
+    {{/fields}}
+
+    const {{model_jar_class_name}}({ {{#fields}}{{^field_is_private}}this.{{field_name}},{{/field_is_private}}{{/fields}} });
+}

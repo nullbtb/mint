@@ -1,0 +1,12 @@
+name: au
+description: Annotation for mint, a code generation framework.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: '>=2.17.0 <3.0.0'
+
+dependencies:
+
+dev_dependencies:
+  test: ^1.0.0

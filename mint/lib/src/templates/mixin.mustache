@@ -1,0 +1,53 @@
+mixin {{model_mixin_class_name}} implements {{model_abstract_class_name}} {
+    {{model_child_class_name}} asChild() {
+        return this is! {{model_child_class_name}} 
+            ? {{model_child_class_name}}._fromAu({{#fields}}{{field_name}},{{/fields}})
+            : this as {{model_child_class_name}};
+    }
+
+    {{#copy_jar_enabled}}
+    {{model_class_name}} copyJar({{model_jar_class_name}} jar) {
+        return {{model_class_name}}._fromAu(
+            {{#fields}}
+            {{^field_is_private}}jar.{{field_name}} == null ? {{field_name}} : jar.{{field_name}}!,{{/field_is_private}}
+            {{#field_is_private}}{{field_name}},{{/field_is_private}}
+            {{/fields}}
+        );
+    }
+    {{/copy_jar_enabled}}
+
+    {{#copy_with_enabled}}
+    {{model_class_name}} copyWith({
+        {{#fields}}
+        {{^field_is_private}}AuValue<{{field_type_with_nullability}}>? {{field_name}},{{/field_is_private}}
+        {{/fields}}
+    }) {
+        return {{model_class_name}}._fromAu(
+            {{#fields}}
+            {{^field_is_private}}{{field_name}} == null ? this.{{field_name}} : {{field_name}}.value,{{/field_is_private}}
+            {{#field_is_private}}{{field_name}},{{/field_is_private}}
+            {{/fields}}
+        );
+    }
+    {{/copy_with_enabled}}
+
+    {{#equality_enabled}}
+    @override
+    bool operator ==(Object other) =>
+        identical(this, other) ||
+        other is {{model_class_name}} &&
+        _effectiveRuntimeType == other._effectiveRuntimeType &&
+        {{#fields}}equivalent({{field_name}}, other.{{field_name}}){{^field_is_last}}&&{{/field_is_last}}{{/fields}};
+
+    @override
+    int get hashCode {
+        return Object.hash(
+            _effectiveRuntimeType,{{#fields}}{{field_name}},{{/fields}}
+        );
+    }
+    {{/equality_enabled}}
+
+    Type get _effectiveRuntimeType => {{model_class_name}};
+
+    {{annotations}}
+}
