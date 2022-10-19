@@ -2,6 +2,8 @@ Warning: This package is still considered experimental.
 
 `Mint` provides a framework to generate code through templates.  It's intended primarily as a prototyping tool.  It comes out of the box with support for `copyWith`, `copyJar`, `equality`, `toJson`, and `fromJson`.  It achieves this through fully customizable templates which are configured to generate code inside a mixin, or a child class.  
 
+## Usage
+
 Usage is fairly straight forward:
 
 ```dart
@@ -157,7 +159,7 @@ Note: As you may have realized, the configured annotations are strings and not a
 
 Note: You may not wish to follow along with referencing generated Au* classes in your codebase.  If thats the case, you could opt to only use the mixin, which will still give you the majority of the functionality: copyWith, copyJar, equality, toJson, etc.  You would of course have to define the necessary factories in your models (fromJson).  The only other change would be to disable the mint_combining_builder, and enable the source_gen one.
 
-# Template Parameters
+## Template Parameters
 When creating your own templates for annotations, you will will need to access some model metadata.  This can be done with the variables below:
 
 ```dart
@@ -188,6 +190,6 @@ abstract class {{model_abstract_class_name}} extends AuMinted {
 }
 ```
 
-# Closing
+## Closing
 
 Fun Fact: This package was originally supposed to be named `Augment`, and then I discovered the work in progress language feature in Dart by the same name.  Therefore I renamed it to: Au + Mint.  The goal is to hopefully not need this package in the future when augmentation is live, but until then.. keep minting gold!
