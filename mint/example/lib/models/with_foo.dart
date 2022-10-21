@@ -13,8 +13,6 @@ class WithFoo with _$WithFoo {
 
   const WithFoo(this.name, this.age);
 
-  // Copy this constructor from the generated code
-  // The positional arguments represent the field names in alphabetical order
   const WithFoo._fromAu(
     this.age,
     this.name,

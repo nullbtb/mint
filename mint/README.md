@@ -1,19 +1,21 @@
 Warning: This package is still considered experimental.
 
-`Mint` provides a framework to generate code through templates.  It comes out of the box with support for `copyWith`, `copyJar`, `equality`, `toJson`, and `fromJson`.  It achieves this through fully customizable templates which are configured to generate code inside a mixin, or a child class.  
+`Mint` provides a framework to generate code through templates.  It comes out of the box with support for `copyWith`, `copyJar`, `equality`, `toJson`, and `fromJson`.  It achieves this through fully customizable templates which are configured to generate code inside a mixin or a child class.  It also allows you to define your own templates and enable/disable them through annotations.
 
 ## Usage
 
 Usage is fairly straight forward:
 
-### Add it to your `pubspec.yaml`.
+### Add the dependencies to your `pubspec.yaml`
 
-```yaml
+```yaml  
 dependencies:
   au: ^0.1.0
+  json_annotation: ^4.7.0
 
 dev_dependencies:
   build_runner: ^2.0.0
+  json_serializable: ^6.3.1
   mint: ^0.3.0
 ```
 
@@ -90,7 +92,7 @@ OR:
 OR for Flutter:
 `flutter packages pub run build_runner build --delete-conflicting-outputs`
 
-### Copy the `_fromAu` constructor if you didn't write it manually
+### Copy the `_fromAu` constructor (if you didn't write it manually)
 At the top of the generated code, you should find the au constructor code:
 
 ```dart
@@ -123,13 +125,59 @@ At the top of the generated code, you should find the au constructor code:
   assert(p5 == p1);
 ```
 
-Notice you no longer have to write code for these common functionalities.  You also no longer need to add the `fromJson` factory constructor, you can use the `AuPerson` (AuCLASS) generated child class's `fromJson` factory.  Instances of `Person` and `AuPerson` are equivalent.
+Notice you no longer have to write code for these common functionalities.  You also no longer need to add the `fromJson` factory constructor, you can use the `AuPerson` (AuCLASS) generated child class's `fromJson` factory.  This works because instances of `Person` and `AuPerson` are equivalent.
 
-This is the premise of Mint, the ability to generate whatever you wish and to interact with the generated code either through the mixin or through the child class (in the case of factories).  This power extends to any other annotations, including your own.  The aim of mint is clean and intuitive data classes without useless repetition and clutter.  Hopefully you use it as intended.  (With great power comes great responsibility)
+This is the premise of Mint, the ability to generate whatever you wish and to interact with the generated code however you wish.  All generated code comes from templates which you can simply modify to suit your needs.  This power extends to interacting with third party libraries.  You can achieve this by configuring a given template for each annotation.  The aim of mint is clean, simple, and intuitive data classes.  Hopefully you use it as intended.  (With great power comes great responsibility)
+
+### Regeneration
+
+The only time you would ever need to rerun the build runner is if you ever modify the field or constructor definitions in a model. As previously mentioned this can be accomplished automatically with a watch command: `dart run build_runner watch --delete-conflicting-outputs`.  
+
+If you want to take this a step farther, you can automate the execution of this command in VSCode so that it runs whenever you open your project.  This can be accomplished through the VSCode tasks configuration.  To set this up simply add this `tasks.json` inside your `.vscode` directory:
+
+```json
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "flutter",
+			"command": "flutter",
+            "args": [
+                "pub",
+                "run",
+                "build_runner",
+                "watch",
+                "lib/", 
+                "--delete-conflicting-outputs",
+            ],
+			"problemMatcher": [
+				"$dart-build_runner"
+			],
+			"options": {
+				"cwd": "example",
+			},
+			"runOptions": {
+        "runOn": "folderOpen"
+      },
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "dedicated",
+				"showReuseMessage": false,
+				"clear": false
+			},
+			"group": "build",
+			"label": "Flutter Build Runner",
+			"detail": "example"
+		}
+	]
+}
+```
 
 ## Configuration
 
-Configuration is done through the `build.yaml` file.
+Configuration for code generation is done through the `build.yaml` file:
 
 ```yaml
 targets:
@@ -207,6 +255,113 @@ abstract class {{model_abstract_class_name}} extends AuMinted {
 }
 ```
 
+## Custom templates targeting an annotation
+
+In the example project you can see an example of how to set this up.  It's fairly straight forward.
+
+### Create your annotation  
+
+In dart any class can be an annotation, it just has to have a const constructor.
+
+```dart
+class Foo {
+  const Foo();
+}
+```
+
+### Create your custom template
+
+```
+// Custom generated function from Foo annotation
+String foo() {
+    return 'foo on {{model_class_name}} - {{#fields}}{{field_name}}{{^field_is_last}},{{/field_is_last}}{{/fields}}';
+}
+```
+
+### Update `build.yaml`
+
+```yaml
+  templates:
+    abstract: "package:mint/src/templates/abstract.mustache"
+    child: "package:mint/src/templates/child.mustache"
+    from_au_hint: "package:mint/src/templates/from_au_hint.mustache"
+    jar: "package:mint/src/templates/jar.mustache"
+    mixin: "package:mint/src/templates/mixin.mustache"
+    from_json: "package:mint/src/templates/from_json.mustache"
+    to_json: "package:mint/src/templates/to_json.mustache"
+    # Add your custom template
+    with_foo: "package:example/templates/with_foo.mustache"
+  mixin_annotations:
+    - annotation: 'JsonSerializable'
+      template: 'to_json'
+    # Add your custom annotation, and configure it to be added to the mixin_annotations
+    - annotation: 'Foo'
+      template: 'with_foo'
+```
+
+### Use it
+
+```dart
+@Au()
+@Foo()
+@JsonSerializable(explicitToJson: true)
+class WithFoo with _$WithFoo {
+  final String name;
+  final int age;
+
+  const WithFoo(this.name, this.age);
+
+  const WithFoo._fromAu(
+    this.age,
+    this.name,
+  );
+}
+```
+
+Since the model is annotated with `Foo`, and we configured Foo to generate the tempalte `with_foo`, the system will generate this additional function as part of the method:
+
+```dart
+  // Custom generated function from Foo annotation
+  String foo() {
+    return 'foo on WithFoo - age,name';
+  }
+```
+
+You can now use it as any other method:
+
+```dart
+final w = WithFoo('foo', 99);
+print(w.foo());
+```
+
+### Factory constructors
+
+Factory constructors can't be defined as part of a mixin.  Therefore `Mint` also generates a child class which extends the original model.  This child class is named `Au(CLASS)`.  This child class is responsible for interacting with generated code for us.  It allows us to not have to define `fromJson` or other similar factory constructors which may be required by third party code generators.  You can utilize a child class in the same way you utilize it's parent model.
+
+If you wish for code to be part of the child class instead you simply move the Foo annotation configuration to the child_annotations section:
+
+```yaml
+  child_annotations:
+    - annotation: 'JsonSerializable'
+      template: 'from_json'
+    # Add the foo annotation configuration
+    - annotation: 'Foo'
+      template: 'with_foo'
+```
+
+#### Optional rewiring
+
+Depending on the third party code generation library you're trying to integrate with, you may also need to "rewire" the third party generated code to now point to the child class instead of the original model it was generated for (Person > AuPerson).  To achieve this, you simply add the extension of the part file to the `mint_combining_builder` configuration:
+
+```yaml
+      mint:mint_combining_builder:
+        enabled: True
+        options:
+          mint_rewire_parts:
+            - 'json_serializable.g.part'
+            # Add parts to rewire
+```
+
 ## Closing
 
-Fun Fact: This package was originally supposed to be named `Augment`, and then I discovered the work in progress language feature in Dart by the same name.  Therefore I renamed it to: Au + Mint.  The goal is to hopefully not need this package in the future when augmentation is live, but until then.. keep minting gold!
+Fun Fact: This package was originally named `Augment`, and then I discovered the work in progress Dart feature by the same name.  Therefore I renamed it to: Au + Mint.  Hopefully augmentation gives us better options for accomplishing this type of behavior in the future, but until then.. keep minting gold!

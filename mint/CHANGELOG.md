@@ -1,3 +1,8 @@
+## 0.4.0
+
+- Adding JsonSerializable to the readme.
+- Adding the Regeneration section to the readme.
+
 ## 0.3.1
 
 - Fixing the pubspec.yaml in the example.
