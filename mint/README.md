@@ -1,10 +1,23 @@
 Warning: This package is still considered experimental.
 
-`Mint` provides a framework to generate code through templates.  It's intended primarily as a prototyping tool.  It comes out of the box with support for `copyWith`, `copyJar`, `equality`, `toJson`, and `fromJson`.  It achieves this through fully customizable templates which are configured to generate code inside a mixin, or a child class.  
+`Mint` provides a framework to generate code through templates.  It comes out of the box with support for `copyWith`, `copyJar`, `equality`, `toJson`, and `fromJson`.  It achieves this through fully customizable templates which are configured to generate code inside a mixin, or a child class.  
 
 ## Usage
 
 Usage is fairly straight forward:
+
+### Add it to your `pubspec.yaml`.
+
+```yaml
+dependencies:
+  au: ^0.1.0
+
+dev_dependencies:
+  build_runner: ^2.0.0
+  mint: ^0.3.0
+```
+
+### Add it to a model
 
 ```dart
 // Import the au annotation
@@ -34,6 +47,8 @@ class Person with _$Person {
   );
 }
 ```
+
+### Update your `build.yaml`
 
 Ensure you have the following configuration in your `build.yaml` (in your project's root).  More details about these in the configuration section below.
 
@@ -67,6 +82,7 @@ targets:
             - 'json_serializable.g.part'
 ```
 
+### Run the build runner
 Run the build_runner to generate the code (or use the watch option to do it automatically on save):
 `dart run build_runner build --delete-conflicting-outputs`
 OR:
@@ -74,6 +90,7 @@ OR:
 OR for Flutter:
 `flutter packages pub run build_runner build --delete-conflicting-outputs`
 
+### Copy the `_fromAu` constructor if you didn't write it manually
 At the top of the generated code, you should find the au constructor code:
 
 ```dart
@@ -81,7 +98,7 @@ At the top of the generated code, you should find the au constructor code:
 // const Person._fromAu(this.age,this.name,);
 ```
 
-Now you're ready to go:
+### Good to go
 
 ```dart
   final p1 = const Person('John', 35);
@@ -90,7 +107,7 @@ Now you're ready to go:
     age: const AuValue<int>(25),
   );
 
-  (p1 == p2) // false
+  assert(p1 != p2);
 
   // or just copy the jar
   final p3 = p1.copyJar(const AuPersonJar(
@@ -100,10 +117,10 @@ Now you're ready to go:
 
   final p4 = AuPerson.fromJson(p3.toJson());
 
-  (p3 == p4); // true
+  assert(p3 == p4);
 
   final p5 = const AuPerson('John', 35);
-  (p5 == p1); // true
+  assert(p5 == p1);
 ```
 
 Notice you no longer have to write code for these common functionalities.  You also no longer need to add the `fromJson` factory constructor, you can use the `AuPerson` (AuCLASS) generated child class's `fromJson` factory.  Instances of `Person` and `AuPerson` are equivalent.

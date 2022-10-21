@@ -249,7 +249,7 @@ class MintGenerator extends GeneratorForAnnotation<Au> {
         continue;
       }
 
-      buffer.write(_processTemplate(
+      buffer.writeln(_processTemplate(
           templates[templateKey]!,
           DefaultTemplateParameter(
             modelData: modelData,

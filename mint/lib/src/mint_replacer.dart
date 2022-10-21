@@ -56,8 +56,9 @@ class MintReplacer {
   }
 
   bool isMintClassField(FieldElement f) {
-    if (f.type is! InterfaceType || f.type.element2 is! ClassElement)
+    if (f.type is! InterfaceType || f.type.element2 is! ClassElement) {
       return false;
+    }
 
     final library = f.type.element2?.library;
 

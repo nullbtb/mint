@@ -1,0 +1,31 @@
+targets:
+  $default:
+    builders:
+      mint:mint_builder:
+        enabled: True
+        options:
+          templates:
+            abstract: "package:mint/src/templates/abstract.mustache"
+            child: "package:mint/src/templates/child.mustache"
+            from_au_hint: "package:mint/src/templates/from_au_hint.mustache"
+            jar: "package:mint/src/templates/jar.mustache"
+            mixin: "package:mint/src/templates/mixin.mustache"
+            from_json: "package:mint/src/templates/from_json.mustache"
+            to_json: "package:mint/src/templates/to_json.mustache"
+            # Example of using a custom annotation to generate custom code
+            with_foo: "package:example/templates/with_foo.mustache"
+          mixin_annotations:
+            - annotation: 'JsonSerializable'
+              template: 'to_json'
+            - annotation: 'Foo'
+              template: 'with_foo'
+          child_annotations:
+            - annotation: 'JsonSerializable'
+              template: 'from_json'
+      source_gen:combining_builder:
+        enabled: False
+      mint:mint_combining_builder:
+        enabled: True
+        options:
+          mint_rewire_parts:
+            - 'json_serializable.g.part'
