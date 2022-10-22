@@ -36,6 +36,7 @@ String ignoreA = 'A';
 // Replace class type
 A? foo;
 B? bar;
+Person? baz;
 
 // Replace param1, param2, param4
 // Ignore param3 and function name
@@ -71,6 +72,7 @@ String ignoreA = 'A';
 // Replace class type
 AuA? foo;
 AuB? bar;
+AuPerson? baz;
 
 // Replace param1, param2, param4
 // Ignore param3 and function name

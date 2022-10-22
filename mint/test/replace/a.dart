@@ -1,6 +1,8 @@
 library replace;
 
 import 'package:au/au.dart';
+// ignore: unused_import
+import '../integration/cases/person/person.dart';
 import 'b.dart';
 
 part 'a.au.dart';

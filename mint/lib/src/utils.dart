@@ -34,22 +34,12 @@ String sourceReplaceSubstring(
 }
 
 List<InterfaceType> getMintModelTypes(LibraryElement libraryElement) {
-  final out = <InterfaceType>[];
-  final classElements = getLibraryMintClassElements(libraryElement);
-
-  for (var classElement in classElements) {
-    out
-      ..add(classElement.thisType)
-      ..addAll(classElement.fields
-          .where((f) =>
-              !f.isConst &&
-              !f.isSynthetic &&
-              !f.isStatic &&
-              isMintClassField(f))
-          .map((e) => e.type as InterfaceType));
-  }
-
-  return out.toSet().toList();
+  return [libraryElement, ...libraryElement.importedLibraries]
+      .map(getLibraryMintClassElements)
+      .expand((x) => x)
+      .map((c) => c.thisType)
+      .toSet()
+      .toList();
 }
 
 Iterable<ClassElement> getLibraryMintClassElements(LibraryElement library) {

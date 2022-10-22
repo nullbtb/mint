@@ -1,6 +1,6 @@
 Warning: This package is still considered experimental.
 
-`Mint` provides a framework to generate code through templates.  It comes out of the box with support for `copyWith`, `copyJar`, `equality`, `toJson`, and `fromJson`.  It achieves this through fully customizable templates which are configured to generate code inside a mixin or a child class.  It also allows you to define your own templates and enable/disable them through annotations.
+`Mint` provides a framework to generate code through templates.  It comes out of the box with support for `copyWith`, `copyJar`, `equality`, `toJson`, and `fromJson`.  However, it allows you to generate whatever you wish, and to interact with the generated code however you wish.  All generated code comes from templates which you can easily modify to suit your needs.  This power extends to interacting with generated third party code.  This allows your classes to not need any "hook up" into generated code.  The aim of mint is clean, simple, and intuitive data classes. 
 
 ## Usage
 
@@ -10,13 +10,13 @@ Usage is fairly straight forward:
 
 ```yaml  
 dependencies:
-  au: ^0.1.0
+  au: ^0.2.1
   json_annotation: ^4.7.0
 
 dev_dependencies:
   build_runner: ^2.0.0
   json_serializable: ^6.3.1
-  mint: ^0.3.0
+  mint: ^0.6.0
 ```
 
 ### Add it to a model
@@ -126,8 +126,6 @@ At the top of the generated code, you should find the au constructor code:
 ```
 
 Notice you no longer have to write code for these common functionalities.  You also no longer need to add the `fromJson` factory constructor, you can use the `AuPerson` (AuCLASS) generated child class's `fromJson` factory.  This works because instances of `Person` and `AuPerson` are equivalent.
-
-This is the premise of Mint, the ability to generate whatever you wish and to interact with the generated code however you wish.  All generated code comes from templates which you can simply modify to suit your needs.  This power extends to interacting with third party libraries.  You can achieve this by configuring a given template for each annotation.  The aim of mint is clean, simple, and intuitive data classes.  Hopefully you use it as intended.  (With great power comes great responsibility)
 
 ### Regeneration
 

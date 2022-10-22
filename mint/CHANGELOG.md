@@ -1,3 +1,7 @@
+## 0.6.0
+
+- Improving the detection of classes needing rewiring.
+
 ## 0.5.0
 
 - Latest au version with downgraded collection for compatibility.
