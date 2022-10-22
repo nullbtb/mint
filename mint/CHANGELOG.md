@@ -1,3 +1,7 @@
+## 0.5.0
+
+- Latest au version with downgraded collection for compatibility.
+
 ## 0.4.0
 
 - Adding JsonSerializable to the readme.
