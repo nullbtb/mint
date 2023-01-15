@@ -135,11 +135,13 @@ class AuPerson extends Person {
       super.honorific,
       super.suffix});
 
-  factory AuPerson.fromFullName(String fullName, Sex sex, int age) {
+  factory AuPerson.fromFullName(String fullName, Sex sex, int age,
+      {List<Person> parents = const []}) {
     return Person.fromFullName(
       fullName,
       sex,
       age,
+      parents: parents,
     ).asChild();
   }
 

@@ -16,7 +16,7 @@ dependencies:
 dev_dependencies:
   build_runner: ^2.0.0
   json_serializable: ^6.3.1
-  mint: ^0.6.0
+  mint: ^0.6.1
 ```
 
 ### Add it to a model
@@ -28,7 +28,7 @@ import 'package:au/au.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 // Include the generated code.  Notice the extension is .au.dart and not .g.dart.
-part 'person.au.dart';
+part 'generated/person.au.dart';
 
 // Annotate the class with Au
 @Au()
@@ -80,6 +80,8 @@ targets:
       mint:mint_combining_builder:
         enabled: True
         options:
+          build_extensions: 
+            '{{path}}/{{name}}.dart': '{{path}}/generated/{{name}}.au.dart' 
           mint_rewire_parts:
             - 'json_serializable.g.part'
 ```
@@ -207,6 +209,9 @@ targets:
       mint:mint_combining_builder:
         enabled: True
         options:
+          # Allows you to generate files into their own /generated directory.  
+          build_extensions: 
+            '{{path}}/{{name}}.dart': '{{path}}/generated/{{name}}.au.dart' 
           # Which parts will have generated model references replaced with Au child references (Person > AuPerson). This is only needed when there are factories being created in child_annotations. It essentially rewires the part generated code to function as if it were generated for the child class instead of the model.  This allows you to interact with it from other generated code without ever needing to add anything to the model.  
           mint_rewire_parts:
             - 'json_serializable.g.part'

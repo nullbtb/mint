@@ -106,11 +106,13 @@ class AuPerson extends Person {
       super.honorific,
       super.suffix});
 
-  factory AuPerson.fromFullName(String fullName, Sex sex, int age) {
+  factory AuPerson.fromFullName(String fullName, Sex sex, int age,
+      {List<Person> parents = const []}) {
     return Person.fromFullName(
       fullName,
       sex,
       age,
+      parents: parents,
     ).asChild();
   }
 
@@ -181,10 +183,11 @@ class Person extends Parent with _$Person {
       : honorific = honorific == null ? null : honorific + (suffix ?? ''),
         _private = age + 5;
 
-  factory Person.fromFullName(String fullName, Sex sex, int age) {
+  factory Person.fromFullName(String fullName, Sex sex, int age,
+      {List<Person> parents = const []}) {
     final parts = fullName.split(' ');
     assert(parts.length == 2);
-    return Person(parts[0], parts[1], sex, age: age);
+    return Person(parts[0], parts[1], sex, age: age, parents: parents);
   }
 
   const Person._fromAu(

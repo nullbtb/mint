@@ -1,3 +1,7 @@
+## 0.6.1
+
+- Fixing an issue when there is a factory constructor with optional parameters.
+
 ## 0.6.0
 
 - Improving the detection of classes needing rewiring.

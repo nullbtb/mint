@@ -1,7 +1,7 @@
 name: mint
 description: Code generation framework with support for copyWith, copyJar, equality, and JsonSerializable (fromJson, toJson).
 repository: https://github.com/nullbtb/mint
-version: 0.6.0
+version: 0.6.1
 
 environment:  
   sdk: '>=2.17.0 <3.0.0'

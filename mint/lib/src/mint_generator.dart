@@ -477,7 +477,9 @@ class MintGenerator extends GeneratorForAnnotation<Au> {
               ? parameterEntity.parameter
               : parameterEntity;
           if (parameterEntity is SimpleFormalParameter) {
-            parameterSourceBuilder.write('${parameterEntity.name.toString()},');
+            parameterSourceBuilder.write(parameterEntity.isOptionalNamed
+                ? '${parameterEntity.name.toString()}: ${parameterEntity.name.toString()},'
+                : '${parameterEntity.name.toString()},');
           }
         }
       } else if (constructorChildEntity is BlockFunctionBody) {
